@@ -1,4 +1,3 @@
-
 name: Build and deploy to GitHub Pages
 
 on:
@@ -28,28 +27,63 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check required files
+      - name: Find website files
+        id: files
+        shell: bash
         run: |
-          for f in index.html manifest.webmanifest sw.js icon.svg icon-180.png icon-512.png; do
-            if [ ! -f "$f" ]; then
-              echo "::error::Missing required file: $f"
-              exit 1
-            fi
-          done
+          set -e
 
-      - name: Prepare site folder
+          if [ -f "index.html" ]; then
+            HTML="index.html"
+          elif [ -f "today-app.html" ]; then
+            HTML="today-app.html"
+          else
+            HTML=$(find . \
+              -type f -iname "*.html" \
+              -not -path "./.git/*" \
+              -not -path "./node_modules/*" \
+              -not -path "./.github/*" \
+              | sort | head -n 1)
+          fi
+
+          if [ -z "$HTML" ]; then
+            echo "::error::No HTML file found in repository."
+            exit 1
+          fi
+
+          echo "Found website: $HTML"
+          echo "html=$HTML" >> "$GITHUB_OUTPUT"
+          echo "folder=$(dirname "$HTML")" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare website
         run: |
           mkdir -p _site
-          cp index.html manifest.webmanifest sw.js icon.svg icon-180.png icon-512.png _site/
+
+          FOLDER="${{ steps.files.outputs.folder }}"
+
+          if [ "$FOLDER" = "." ]; then
+            cp -a . _site/ \
+              --no-preserve=ownership
+          else
+            cp -a "$FOLDER"/. _site/
+          fi
+
+          HTML_NAME="$(basename "${{ steps.files.outputs.html }}")"
+
+          if [ "$HTML_NAME" != "index.html" ]; then
+            cp "_site/$HTML_NAME" _site/index.html
+          fi
+
+          echo "Website prepared successfully!"
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload Pages artifact
+      - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
