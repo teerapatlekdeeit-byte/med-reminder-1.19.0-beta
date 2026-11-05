@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เตือนกินยา</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="เตือนกินยา">
+<meta name="theme-color" content="#0f8b8d">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef6f6;--sf:#fff;--ink:#12302f;--mut:#58716f;--ac:#0f8b8d;--aci:#fff;--warn:#d9442c;--ln:#cfe2e2;--ok:#d9efe3;--okt:#1c6b45;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1f1f;--sf:#162b2b;--ink:#e8f4f3;--mut:#93b3b1;--ac:#3cc6c8;--aci:#06201f;--warn:#ff8a73;--ln:#264544;--ok:#1b3a2e;--okt:#7fdba8}}
+:root[data-theme="dark"]{--bg:#0e1f1f;--sf:#162b2b;--ink:#e8f4f3;--mut:#93b3b1;--ac:#3cc6c8;--aci:#06201f;--warn:#ff8a73;--ln:#264544;--ok:#1b3a2e;--okt:#7fdba8}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:20px/1.5 'Noto Sans Thai',system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:16px 16px 130px}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.top{display:flex;align-items:center;gap:12px}
+.logo{width:52px;height:52px;border-radius:16px 16px 16px 5px;background:var(--ac);flex:none;display:grid;place-items:center}
+h1{font-size:1.4rem;margin:0}h2{font-size:1.2rem;margin:28px 0 12px}
+.clock{margin-left:auto;font-size:2.2rem;font-weight:800;color:var(--ac);font-variant-numeric:tabular-nums}
+.mut{color:var(--mut);font-size:.85rem}
+.card{background:var(--sf);border:2px solid var(--ln);border-radius:24px;padding:18px;margin-top:18px}
+.next{background:var(--ac);color:var(--aci);border:0}
+.next .lb{font-size:1rem;font-weight:600}
+.next .tm{font-size:3.4rem;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.next .nm{font-size:1.4rem;font-weight:600}
+.big{display:block;width:100%;min-height:68px;margin-top:14px;border:0;border-radius:18px;font-weight:800;font-size:1.4rem;background:var(--aci);color:var(--ac)}
+.pri{background:var(--ac);color:var(--aci)}
+.ghost{background:transparent;border:2px solid var(--ln);color:var(--ink)}
+.empty{text-align:center}.empty b{font-size:1.3rem}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.it{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--sf);border:2px solid var(--ln);border-radius:20px;padding:14px}
+.it.done{background:var(--ok)}
+.t2{font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
+.late{color:var(--warn);font-weight:600;font-size:.9rem}.okk{color:var(--okt);font-weight:800;font-size:1rem}
+.acts{display:grid;gap:6px;justify-items:end}
+.take{min-height:56px;padding:0 20px;border-radius:16px;border:3px solid var(--ac);background:transparent;color:var(--ac);font-weight:800;font-size:1.15rem}
+.sm{border:0;background:transparent;color:var(--mut);font-size:.85rem;text-decoration:underline;padding:6px}
+.sm.arm{color:var(--warn);font-weight:600}
+details{margin-top:28px}summary{font-weight:600;padding:10px 0}
+.set button,.set select{min-height:52px;border:2px solid var(--ln);background:var(--sf);border-radius:14px;padding:8px 14px;margin:0 8px 8px 0;font:inherit}
+footer{margin-top:24px;color:var(--mut);font-size:.8rem}
+.fab{position:fixed;left:16px;right:16px;max-width:528px;margin:0 auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));min-height:68px;border:0;border-radius:34px;background:var(--ac);color:var(--aci);font-weight:800;font-size:1.4rem;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.sheet,.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:5}
+.panel{background:var(--bg);width:100%;max-width:560px;max-height:94dvh;overflow:auto;border-radius:26px 26px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.wtop{display:flex;justify-content:space-between;align-items:center}
+.wtop button{border:0;background:transparent;color:var(--mut);font-size:1.05rem;padding:8px 4px;min-height:48px}
+.panel h2{margin:6px 0 14px;font-size:1.7rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{min-height:64px;border:2px solid var(--ln);background:var(--sf);border-radius:16px;padding:8px 10px;font-weight:600;font-size:1.1rem}
+.opt[aria-pressed="true"]{background:var(--ac);color:var(--aci);border-color:var(--ac)}
+.one{grid-template-columns:1fr}.one .opt{min-height:72px;font-size:1.3rem;text-align:left;padding:8px 18px}
+.inp{width:100%;min-height:56px;margin-top:12px;border:2px solid var(--ln);border-radius:14px;background:var(--sf);padding:8px 12px}
+.msg{color:var(--warn);font-weight:600;min-height:1.6em;margin-top:8px}
+.ov{align-items:center;padding:16px;z-index:9}
+.ov .panel{border-radius:28px;text-align:center;max-width:420px;background:var(--ac);color:var(--aci)}
+.ov .tm{font-size:3.6rem;font-weight:800;line-height:1.1}
+.ov .big.g{background:transparent;border:2px solid var(--aci);color:var(--aci)}
+.ov .pill{font-size:3.4rem}
+@media (prefers-reduced-motion:no-preference){.ov .pill{animation:w 1s ease-in-out infinite}@keyframes w{50%{transform:rotate(12deg)}}}
+#toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:14px;font-weight:600;z-index:20}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+</head>
+<body>
+<main>
+<div class="top">
+  <div class="logo"><svg viewBox="0 0 64 64" style="width:100%;height:100%" aria-hidden="true"><g transform="scale(.64) translate(-20 -20)"><g stroke="#12302f" stroke-width="2.5" stroke-linejoin="round"><rect x="47" y="32" width="46" height="14" rx="4" fill="#ffd166"/><rect x="44" y="46" width="52" height="62" rx="9" fill="#fff"/><rect x="44" y="62" width="52" height="30" fill="#ff8a73"/></g><path d="M70 69v16M62 77h16" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none"/></g></svg></div>
+  <div><h1>เตือนกินยา</h1><div class="mut" id="date"></div></div>
+  <div class="clock" id="clock">--:--</div>
+</div>
+
+<section id="next"></section>
+
+<h2>ยาของวันนี้</h2>
+<ul id="list"></ul>
+
+<details class="set"><summary>ตั้งค่า (เสียง การแจ้งเตือน)</summary>
+  <button id="notifBtn" type="button">เปิดการแจ้งเตือน</button>
+  <select id="snd" aria-label="เลือกเสียง"><option value="chime">เสียงกริ่งเบา</option><option value="bell">เสียงระฆัง</option><option value="beep">เสียงบี๊บ</option></select>
+  <button id="testBtn" type="button">ทดสอบเสียง</button>
+  <p class="mut">เตือนได้เฉพาะตอนเปิดหน้านี้ค้างไว้ ข้อมูลเก็บในเครื่องของคุณเท่านั้น</p>
+</details>
+<footer>เป็นเครื่องมือช่วยเตือนเท่านั้น ไม่ใช่คำแนะนำทางการแพทย์ โปรดกินยาตามที่แพทย์หรือเภสัชกรสั่ง</footer>
+</main>
+
+<button class="fab" id="fab" type="button">+ เพิ่มยา</button>
+
+<div class="sheet" id="sheet" hidden>
+ <div class="panel" role="dialog" aria-modal="true" aria-label="เพิ่มยา">
+  <div class="wtop"><button type="button" data-w="back" id="wback"></button><span class="mut" id="wstep"></span></div>
+  <h2 id="wt"></h2>
+  <div id="wb"></div>
+  <div class="msg" id="wm" role="alert"></div>
+ </div>
+</div>
+
+<div class="ov" id="ov" hidden role="alertdialog" aria-modal="true">
+ <div class="panel">
+  <div class="pill" aria-hidden="true">💊</div>
+  <div>ถึงเวลากินยา</div>
+  <div class="tm" id="ot"></div>
+  <div style="font-size:1.5rem;font-weight:600" id="on"></div>
+  <div id="oo"></div>
+  <button class="big" id="otake" type="button">กินแล้ว</button>
+  <button class="big g" id="osn" type="button">เตือนอีก 10 นาที</button>
+ </div>
+</div>
+<div id="toast" hidden></div>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var meds=[],taken={},fired={},sn={},cur=null,rep=null,arm=null,lastMin='',S={},step=1;
+var LIST=['พาราเซตามอล','ไอบูโพรเฟน','ยาความดัน','ยาเบาหวาน','ยาลดไขมัน','ยาหัวใจ','ยาแก้แพ้','ยาลดกรด','ยาปฏิชีวนะ','ยาแก้ไอ','ยาคุมกำเนิด','วิตามินซี','แคลเซียม','วิตามินรวม'];
+var DOSE=['½ เม็ด','1 เม็ด','2 เม็ด','1 แคปซูล','2 แคปซูล','1 ช้อนชา','1 ช้อนโต๊ะ','1 ซอง'];
+var QT=[['08:00','🌅 เช้า 08:00'],['12:00','☀️ กลางวัน 12:00'],['18:00','🌆 เย็น 18:00'],['21:00','🌙 ก่อนนอน 21:00']];
+var SND={chime:[[659,0,'sine',.6],[880,.3,'sine',.6],[1319,.6,'sine',1],[880,1.2,'sine',.6],[1319,1.5,'sine',1]],bell:[[1047,0,'triangle',1.4],[1047,.7,'triangle',1.4],[1047,1.4,'triangle',1.4]],beep:[[880,0,'square',.18],[880,.3,'square',.18],[880,.6,'square',.18]]};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function load(){try{meds=JSON.parse(localStorage.getItem('meds')||'[]');taken=JSON.parse(localStorage.getItem('taken')||'{}')}catch(e){meds=[];taken={}}}
+function persist(){try{localStorage.setItem('meds',JSON.stringify(meds));localStorage.setItem('taken',JSON.stringify(taken))}catch(e){}}
+function sel(){try{return localStorage.getItem('snd')||'chime'}catch(e){return 'chime'}}
+function today(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function hm(d){return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+function toast(s){var t=$('toast');t.textContent=s;t.hidden=false;setTimeout(function(){t.hidden=true},2200)}
+
+function beep(){
+  try{var C=window.AudioContext||window.webkitAudioContext,c=new C();
+  (SND[sel()]||SND.chime).forEach(function(n){var o=c.createOscillator(),g=c.createGain(),s=c.currentTime+n[1];o.type=n[2];o.frequency.value=n[0];g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(.25,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+n[3]);o.connect(g);g.connect(c.destination);o.start(s);o.stop(s+n[3]+.05)})}catch(e){}
+  try{if(navigator.vibrate)navigator.vibrate([300,150,300])}catch(e){}
+}
+
+function render(){
+  var key=today(),nowt=hm(new Date());
+  var sorted=meds.slice().sort(function(a,b){return a.t<b.t?-1:1});
+  var rem=sorted.filter(function(m){return !taken[key+'|'+m.id]});
+  var nx=rem.filter(function(m){return m.t>=nowt})[0]||rem[0];
+  if(!sorted.length)$('next').innerHTML='<div class="card empty"><b>ยังไม่มียา</b><div class="mut">กดปุ่ม "เพิ่มยา" ด้านล่างได้เลย</div></div>';
+  else if(!nx)$('next').innerHTML='<div class="card empty"><b>กินยาครบแล้ววันนี้ 🎉</b><div class="mut">พรุ่งนี้เจอกันใหม่</div></div>';
+  else $('next').innerHTML='<div class="card next"><div class="lb">'+(nx.t<nowt?'เลยเวลาแล้ว กินยานี้เลย':'ยาถัดไป')+'</div><div class="tm">'+nx.t+'</div><div class="nm">'+esc(nx.n)+(nx.d?' · '+esc(nx.d):'')+'</div><button class="big" data-take="'+nx.id+'" type="button">กินแล้ว</button></div>';
+  $('list').innerHTML=sorted.map(function(m){
+    var dn=taken[key+'|'+m.id];
+    var st=dn?'<span class="okk">✓ กินแล้ว</span>':(m.t<nowt?'<span class="late">เลยเวลา</span>':'');
+    var main=dn?'<button class="sm" data-take="'+m.id+'" type="button">ย้อนกลับ</button>':'<button class="take" data-take="'+m.id+'" type="button">กินแล้ว</button>';
+    return '<li class="it'+(dn?' done':'')+'"><div><div class="t2">'+m.t+' '+st+'</div><div>'+esc(m.n)+(m.d?' · '+esc(m.d):'')+(m.o?' · '+esc(m.o):'')+'</div></div><div class="acts">'+main+'<button class="sm'+(arm===m.id?' arm':'')+'" data-del="'+m.id+'" type="button">'+(arm===m.id?'แตะอีกครั้งเพื่อลบ':'ลบ')+'</button></div></li>';
+  }).join('');
+}
+
+function show(m){
+  cur=m;$('ot').textContent=m.t;$('on').textContent=m.n+(m.d?' · '+m.d:'');$('oo').textContent=m.o||'';
+  $('ov').hidden=false;beep();clearInterval(rep);rep=setInterval(beep,20000);
+  try{if('Notification' in window&&Notification.permission==='granted')new Notification('ถึงเวลากินยา',{body:m.n+(m.d?' '+m.d:'')})}catch(e){}
+}
+function closeOv(){clearInterval(rep);$('ov').hidden=true;cur=null}
+
+function tick(){
+  var now=new Date(),t=hm(now),key=today();
+  $('clock').textContent=t;
+  try{$('date').textContent=now.toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long'})}catch(e){}
+  if(t!==lastMin){lastMin=t;render()}
+  if(cur)return;
+  for(var i=0;i<meds.length;i++){
+    var m=meds[i],fk=key+'|'+m.id;
+    if(taken[fk])continue;
+    if(m.t===t&&!fired[fk]){fired[fk]=1;show(m);return}
+    if(sn[m.id]&&Date.now()>=sn[m.id]){delete sn[m.id];show(m);return}
+  }
+}
+
+function ob(a,v,on,label){return '<button type="button" class="opt" '+a+'="'+esc(v)+'" aria-pressed="'+on+'">'+esc(label||v)+'</button>'}
+function rw(){
+  $('wm').textContent='';
+  $('wstep').textContent='ขั้น '+step+' จาก 3';
+  $('wback').textContent=step===1?'✕ ปิด':'‹ ย้อนกลับ';
+  var h='';
+  if(step===1){
+    $('wt').textContent='กินยาอะไร?';
+    h='<div class="grid">'+LIST.map(function(v){return ob('data-n',v,S.n===v)}).join('')+ob('data-n','__o',S.n==='__o','✏️ ยาอื่น (พิมพ์ชื่อ)')+'</div>';
+    if(S.n==='__o')h+='<input class="inp" id="oth" maxlength="40" placeholder="พิมพ์ชื่อยา" value="'+esc(S.on||'')+'"><button class="big pri" data-w="go1" type="button">ต่อไป</button>';
+  }else if(step===2){
+    $('wt').textContent='กินครั้งละเท่าไร?';
+    h='<div class="grid">'+DOSE.map(function(v){return ob('data-d',v,S.d===v)}).join('')+'</div>';
+  }else{
+    $('wt').textContent='กินตอนไหน?';
+    var all=QT.slice();S.ts.forEach(function(t){if(!QT.some(function(q){return q[0]===t}))all.push([t,'🕒 '+t])});
+    h='<div class="mut">แตะเลือกได้หลายครั้ง</div><div class="grid one">'+all.map(function(q){return ob('data-t',q[0],S.ts.indexOf(q[0])>-1,(S.ts.indexOf(q[0])>-1?'✓ ':'')+q[1])}).join('')+'</div><div class="mut" style="margin-top:12px">เวลาอื่น</div><input class="inp" id="ct" type="time" aria-label="เวลาอื่น"><button class="big pri" data-w="save" type="button">บันทึก'+(S.ts.length?' ('+S.ts.length+' เวลา)':'')+'</button>';
+  }
+  $('wb').innerHTML=h;
+}
+function openSheet(){S={n:'',on:'',d:'1 เม็ด',ts:[]};step=1;$('sheet').hidden=false;rw()}
+function closeSheet(){$('sheet').hidden=true}
+
+$('fab').onclick=openSheet;
+$('sheet').addEventListener('click',function(e){
+  if(e.target===this)return closeSheet();
+  var b=e.target.closest('button');if(!b)return;
+  var n=b.getAttribute('data-n'),d=b.getAttribute('data-d'),t=b.getAttribute('data-t'),w=b.getAttribute('data-w');
+  if(n!==null){S.n=n;if(n!=='__o')step=2;rw()}
+  else if(d!==null){S.d=d;step=3;rw()}
+  else if(t!==null){var i=S.ts.indexOf(t);if(i>-1)S.ts.splice(i,1);else S.ts.push(t);rw()}
+  else if(w==='back'){if(step===1)closeSheet();else{step--;rw()}}
+  else if(w==='go1'){var v=($('oth').value||'').trim();if(!v){$('wm').textContent='พิมพ์ชื่อยาก่อนนะ';return}S.on=v;step=2;rw()}
+  else if(w==='save'){
+    var nm=S.n==='__o'?S.on:S.n;
+    if(!S.ts.length){$('wm').textContent='เลือกเวลาอย่างน้อย 1 เวลานะ';return}
+    S.ts.forEach(function(x){meds.push({id:Date.now().toString(36)+x.replace(':',''),n:nm,d:S.d,t:x,o:''})});
+    persist();closeSheet();render();toast('เพิ่มยาแล้ว ✓');
+  }
+});
+$('sheet').addEventListener('input',function(e){if(e.target.id==='oth')S.on=e.target.value});
+$('sheet').addEventListener('change',function(e){if(e.target.id==='ct'){var v=e.target.value;if(v&&S.ts.indexOf(v)<0)S.ts.push(v);rw()}});
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b||b.closest('#sheet'))return;
+  var tk=b.getAttribute('data-take'),dl=b.getAttribute('data-del');
+  if(tk){var k=today()+'|'+tk;if(taken[k])delete taken[k];else taken[k]=1;persist();render()}
+  if(dl){if(arm===dl){meds=meds.filter(function(m){return m.id!==dl});arm=null;persist()}else{arm=dl;setTimeout(function(){arm=null;render()},3000)}render()}
+});
+$('otake').onclick=function(){if(cur){taken[today()+'|'+cur.id]=1;persist()}closeOv();render()};
+$('osn').onclick=function(){if(cur)sn[cur.id]=Date.now()+600000;closeOv()};
+$('testBtn').onclick=beep;
+$('snd').onchange=function(){try{localStorage.setItem('snd',this.value)}catch(e){}beep()};
+$('notifBtn').onclick=function(){
+  try{if('Notification' in window)Notification.requestPermission().then(function(p){$('notifBtn').textContent=p==='granted'?'แจ้งเตือนเปิดอยู่':'ไม่ได้รับอนุญาต'});else $('notifBtn').textContent='เครื่องนี้ไม่รองรับ'}catch(e){$('notifBtn').textContent='ไม่รองรับ'}
+};
+
+load();$('snd').value=sel();tick();render();setInterval(tick,5000);
+})();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){try{navigator.serviceWorker.register("sw.js")}catch(e){}})}</script>
+</body>
+</html>
