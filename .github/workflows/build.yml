@@ -1,8 +1,10 @@
+
 name: Build and deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -17,32 +19,37 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Check required files
         run: |
           for f in index.html manifest.webmanifest sw.js icon.svg icon-180.png icon-512.png; do
-            test -f "$f" || { echo "Missing file: $f"; exit 1; }
+            if [ ! -f "$f" ]; then
+              echo "::error::Missing required file: $f"
+              exit 1
+            fi
           done
 
-      - name: Build site folder
+      - name: Prepare site folder
         run: |
-          mkdir _site
+          mkdir -p _site
           cp index.html manifest.webmanifest sw.js icon.svg icon-180.png icon-512.png _site/
 
-      - name: Setup Pages
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload site
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
